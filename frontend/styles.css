@@ -1,19 +1,19 @@
-/* QMC Decoder — mint light and ocean dark themes. */
+/* QMC Decoder — ice blue light and midnight blue dark themes. */
 :root {
   color-scheme: light;
-  --bg: #effaf6;
+  --bg: #eff7ff;
   --surface: #ffffff;
-  --surface-2: #e8faf3;
-  --surface-3: #d9f5e9;
-  --border: #d2e9e0;
-  --border-strong: #88cdb8;
-  --ink: #143d35;
-  --ink-2: #315c52;
-  --muted: #55796e;
-  --faint: #66867d;
-  --accent: #087e68;
-  --accent-deep: #056551;
-  --accent-tint: #d1f6e6;
+  --surface-2: #e7f3ff;
+  --surface-3: #d9ecff;
+  --border: #d0e3f5;
+  --border-strong: #85b9e6;
+  --ink: #173b60;
+  --ink-2: #345b7f;
+  --muted: #557594;
+  --faint: #647f99;
+  --accent: #126bc5;
+  --accent-deep: #0855a3;
+  --accent-tint: #d5ebff;
   --on-accent: #ffffff;
   --ok-text: #13784f;
   --ok-bg: #dbf8e7;
@@ -21,51 +21,51 @@
   --err-bg: #ffe9ee;
   --warn-text: #866015;
   --warn-bg: #fff3ce;
-  --chip-bg: #d3f3e5;
-  --chip-ink: #27634f;
-  --drop-border: #81cfb2;
-  --scrollbar-thumb: #a6d7c6;
-  --selection: #a9ecd3;
-  --halo: #ccf6e5;
+  --chip-bg: #d4eaff;
+  --chip-ink: #2b5d8b;
+  --drop-border: #80b9ed;
+  --scrollbar-thumb: #a3c8e9;
+  --selection: #abd6ff;
+  --halo: #cce8ff;
   --radius: 16px;
-  --shadow-sm: 0 2px 6px rgba(26, 102, 78, 0.05);
-  --shadow-md: 0 10px 28px rgba(26, 102, 78, 0.08);
-  --shadow-lg: 0 24px 60px rgba(14, 62, 49, 0.2);
+  --shadow-sm: 0 2px 6px rgba(24, 88, 156, 0.05);
+  --shadow-md: 0 10px 28px rgba(24, 88, 156, 0.08);
+  --shadow-lg: 0 24px 60px rgba(16, 53, 96, 0.2);
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI",
     "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #101f28;
-  --surface: #182e37;
-  --surface-2: #1d3b42;
-  --surface-3: #28464d;
-  --border: #2f4e56;
-  --border-strong: #4d8b88;
-  --ink: #e4faf4;
-  --ink-2: #c1e4d9;
-  --muted: #a1c5bc;
-  --faint: #8aafa7;
-  --accent: #5ce1b5;
-  --accent-deep: #8cebc9;
-  --accent-tint: #234b46;
-  --on-accent: #10382e;
+  --bg: #101c30;
+  --surface: #182b43;
+  --surface-2: #1d3552;
+  --surface-3: #284263;
+  --border: #304b6c;
+  --border-strong: #4f7fae;
+  --ink: #e5f2ff;
+  --ink-2: #c3dcf5;
+  --muted: #a2bfdc;
+  --faint: #8baac9;
+  --accent: #72baff;
+  --accent-deep: #9bcfff;
+  --accent-tint: #22476c;
+  --on-accent: #102d4c;
   --ok-text: #83e6b0;
   --ok-bg: #21483b;
   --err-text: #ffadbd;
   --err-bg: #4b2c3d;
   --warn-text: #f2d18b;
   --warn-bg: #453e2c;
-  --chip-bg: #2b4d4b;
-  --chip-ink: #b3e5d3;
-  --drop-border: #4c8b82;
-  --scrollbar-thumb: #416961;
-  --selection: #356e60;
-  --halo: #163c40;
-  --shadow-sm: 0 2px 6px rgba(3, 17, 22, 0.16);
-  --shadow-md: 0 10px 28px rgba(3, 17, 22, 0.25);
-  --shadow-lg: 0 24px 60px rgba(3, 17, 22, 0.5);
+  --chip-bg: #29496b;
+  --chip-ink: #b6dcff;
+  --drop-border: #4f84b9;
+  --scrollbar-thumb: #41658d;
+  --selection: #345f91;
+  --halo: #183960;
+  --shadow-sm: 0 2px 6px rgba(3, 13, 30, 0.16);
+  --shadow-md: 0 10px 28px rgba(3, 13, 30, 0.25);
+  --shadow-lg: 0 24px 60px rgba(3, 13, 30, 0.5);
 }
 
 /* ============================================================
@@ -317,12 +317,12 @@ main.grid {
   background: var(--accent);
   color: var(--on-accent);
   min-width: 150px;
-  box-shadow: 0 1px 2px rgba(8, 126, 104, 0.18), 0 4px 12px rgba(8, 126, 104, 0.15);
+  box-shadow: 0 1px 2px rgba(18, 107, 197, 0.18), 0 4px 12px rgba(18, 107, 197, 0.15);
 }
 .btn.primary:not(:disabled):hover {
   background: var(--accent-deep);
   transform: translateY(-1px);
-  box-shadow: 0 1px 2px rgba(8, 126, 104, 0.18), 0 6px 16px rgba(8, 126, 104, 0.22);
+  box-shadow: 0 1px 2px rgba(18, 107, 197, 0.18), 0 6px 16px rgba(18, 107, 197, 0.22);
 }
 .btn.primary:not(:disabled):active { transform: translateY(0); }
 .btn.secondary {
@@ -366,7 +366,7 @@ main.grid {
   height: 9px;
   display: inline-block;
   vertical-align: -1px;
-  border: 2px solid rgba(110, 158, 133, 0.3);
+  border: 2px solid rgba(90, 160, 225, 0.3);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
