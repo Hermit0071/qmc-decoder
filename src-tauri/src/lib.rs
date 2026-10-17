@@ -14,6 +14,7 @@ pub fn run() {
             commands::get_file_info,
             commands::fetch_ekey_musicex,
             commands::check_credentials,
+            commands::open_credentials_settings,
             commands::pick_files,
             commands::pick_folder,
             commands::inspect_paths,

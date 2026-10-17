@@ -296,6 +296,7 @@ pub struct CredentialsStatus {
     pub found: bool,
     pub uin: Option<String>,
     pub reason: Option<String>,
+    pub permission_required: bool,
 }
 
 #[tauri::command]
@@ -308,18 +309,38 @@ pub async fn check_credentials() -> CredentialsStatus {
                 found: true,
                 uin: Some(creds.uin),
                 reason: None,
+                permission_required: false,
             },
             Err(e) => CredentialsStatus {
                 found: false,
                 uin: None,
                 reason: Some(e.to_string()),
+                permission_required: matches!(e, qmc_decoder::EkeyFetchError::CredentialsAccessDenied),
             },
         })
         .unwrap_or_else(|_| CredentialsStatus {
             found: false,
             uin: None,
             reason: Some("后台检查任务失败".to_string()),
+            permission_required: false,
         })
+}
+
+#[tauri::command]
+pub fn open_credentials_settings() -> Result<(), String> {
+    #[cfg(target_os = "macos")]
+    {
+        let status = std::process::Command::new("/usr/bin/open")
+            .arg("x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles")
+            .status()
+            .map_err(|e| format!("无法打开系统设置：{}", e))?;
+        if !status.success() {
+            return Err("无法打开系统设置，请手动进入隐私与安全性 → 完全磁盘访问权限".to_string());
+        }
+        Ok(())
+    }
+    #[cfg(not(target_os = "macos"))]
+    Err("此设置仅适用于 macOS".to_string())
 }
 
 /// Best default location to open file pickers: the QQ Music download folder.

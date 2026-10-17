@@ -697,6 +697,8 @@ input:focus {
 .cred-note.ok { color: var(--ok-text); background: var(--ok-bg); }
 .cred-note.warn { color: var(--warn-text); background: var(--warn-bg); }
 
+#btn-credentials-settings[hidden] { display: none; }
+
 /* ---------- footer ---------- */
 .foot {
   flex-shrink: 0;

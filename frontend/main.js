@@ -17,7 +17,7 @@
     files: new Map(), // path -> { path, name, status, message, output, isDir }
     outputDir: '',
     ekey: '',
-    autoFetch: false,
+    autoFetch: true,
     showEkey: false,
     busy: false,
   };
@@ -46,6 +46,8 @@
   const btnToggleEkey = $('btn-toggle-ekey');
   const autoFetch = $('autoFetch');
   const credNote = $('cred-note');
+  const btnCredentialsSettings = $('btn-credentials-settings');
+  const btnCheckCredentials = $('btn-check-credentials');
   const modal = $('modal');
   const infoDetails = $('info-details');
   const infoPath = $('info-path');
@@ -437,7 +439,18 @@
   // -------------------------------------------------------------------------
   inputOutput.addEventListener('input', () => { state.outputDir = inputOutput.value; });
   inputEkey.addEventListener('input', () => { state.ekey = inputEkey.value; });
-  autoFetch.addEventListener('change', () => { state.autoFetch = autoFetch.checked; });
+  autoFetch.addEventListener('change', () => {
+    state.autoFetch = autoFetch.checked;
+    if (state.autoFetch) checkCredentials();
+  });
+  btnCheckCredentials.addEventListener('click', checkCredentials);
+  btnCredentialsSettings.addEventListener('click', async () => {
+    try {
+      await invoke('open_credentials_settings');
+    } catch (e) {
+      notify(String(e), 'err');
+    }
+  });
 
   btnToggleEkey.addEventListener('click', () => {
     state.showEkey = !state.showEkey;
@@ -536,7 +549,7 @@
       inputOutput.value = state.outputDir;
       state.ekey = localStorage.getItem('ekey') || '';
       inputEkey.value = state.ekey;
-      state.autoFetch = localStorage.getItem('autoFetch') === '1';
+      state.autoFetch = localStorage.getItem('autoFetch') !== '0';
       autoFetch.checked = state.autoFetch;
     } catch (e) { /* storage may be disabled; ignore */ }
   }
@@ -552,15 +565,20 @@
   window.addEventListener('beforeunload', persist);
 
   async function checkCredentials() {
+    if (btnCheckCredentials.disabled) return;
+    btnCheckCredentials.disabled = true;
+    btnCheckCredentials.textContent = '检测中…';
     try {
       const cred = await invoke('check_credentials');
       if (!cred) return;
+      btnCredentialsSettings.hidden = !cred.permissionRequired;
       if (cred.found) {
-        credNote.textContent = `已检测到本机 QQ 音乐凭据（uin：${cred.uin}），可自动获取 EKey`;
+        credNote.textContent = '已检测到本机 QQ 音乐登录信息。开启自动获取后，点击解密即可逐首获取 EKey，无需手动填写。';
         credNote.className = 'cred-note ok';
       } else {
-        credNote.textContent = '未检测到 QQ 音乐凭据：' + (cred.reason || '未知原因') +
-          '。自动获取可能失败，可勾选后手动输入 EKey。';
+        credNote.textContent = cred.permissionRequired ? cred.reason :
+          '未检测到 QQ 音乐登录信息：' + (cred.reason || '未知原因') +
+          '。请先在本机 QQ 音乐登录，再点击重新检测；也可手动输入 EKey。';
         credNote.className = 'cred-note warn';
       }
       credNote.hidden = false;
@@ -568,6 +586,9 @@
       credNote.textContent = '凭据检查失败：' + e;
       credNote.className = 'cred-note warn';
       credNote.hidden = false;
+    } finally {
+      btnCheckCredentials.disabled = false;
+      btnCheckCredentials.textContent = '重新检测';
     }
   }
 

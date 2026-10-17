@@ -34,6 +34,8 @@ pub enum EkeyFetchError {
     NoMusicexFooter,
     /// QQ Music credentials not found (app not installed or not logged in)
     NoCredentials(String),
+    /// macOS denied access to the QQ Music preferences.
+    CredentialsAccessDenied,
     /// The API returned an error response
     ApiError { code: i64, message: String },
     /// The API returned successfully but with an empty ekey (VIP required or auth expired)
@@ -52,6 +54,9 @@ impl std::fmt::Display for EkeyFetchError {
             }
             EkeyFetchError::NoCredentials(msg) => {
                 write!(f, "QQ Music credentials not found: {}", msg)
+            }
+            EkeyFetchError::CredentialsAccessDenied => {
+                write!(f, "macOS 阻止读取 QQ 音乐登录信息。请在系统设置 → 隐私与安全性 → 完全磁盘访问权限中添加并开启 QMC Decoder，然后退出并重新打开应用，再点击重新检测。")
             }
             EkeyFetchError::ApiError { code, message } => {
                 write!(f, "QQ Music API error (code {}): {}", code, message)
@@ -356,9 +361,7 @@ pub fn get_qqmusic_credentials() -> Result<QQMusicCredentials, EkeyFetchError> {
         )));
     }
 
-    let plist_value = Value::from_file(&plist_path).map_err(|e| {
-        EkeyFetchError::ParseError(format!("Failed to read QQ Music plist: {}", e))
-    })?;
+    let plist_value = Value::from_file(&plist_path).map_err(qqmusic_preferences_error)?;
 
     let plist_dict = plist_value.as_dictionary().ok_or_else(|| {
         EkeyFetchError::ParseError("QQ Music plist is not a dictionary".to_string())
@@ -376,6 +379,14 @@ pub fn get_qqmusic_credentials() -> Result<QQMusicCredentials, EkeyFetchError> {
     })?;
 
     parse_nskeyed_archiver_credentials(data)
+}
+
+#[cfg(target_os = "macos")]
+fn qqmusic_preferences_error(error: plist::Error) -> EkeyFetchError {
+    if error.as_io().is_some_and(|e| e.kind() == std::io::ErrorKind::PermissionDenied) {
+        return EkeyFetchError::CredentialsAccessDenied;
+    }
+    EkeyFetchError::ParseError(format!("Failed to read QQ Music plist: {}", error))
 }
 
 // ============================================================
@@ -1062,8 +1073,6 @@ pub async fn fetch_ekey(input_path: &Path) -> Result<String, EkeyFetchError> {
     eprintln!("Fetching ekey from QQ Music API for {}...", api_filename);
 
     let creds = get_qqmusic_credentials()?;
-    eprintln!("Found QQ Music credentials (uin={})", creds.uin);
-
     let ekey = call_get_evkey_api(&creds, &api_filename, &info.media_mid).await?;
 
     eprintln!("Successfully obtained ekey ({} chars)", ekey.len());
@@ -1074,6 +1083,37 @@ pub async fn fetch_ekey(input_path: &Path) -> Result<String, EkeyFetchError> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn preferences_permission_error_explains_how_to_authorize() {
+        struct DeniedReader(i32);
+        impl std::io::Read for DeniedReader {
+            fn read(&mut self, _: &mut [u8]) -> std::io::Result<usize> {
+                Err(std::io::Error::from_raw_os_error(self.0))
+            }
+        }
+        impl std::io::Seek for DeniedReader {
+            fn seek(&mut self, _: std::io::SeekFrom) -> std::io::Result<u64> {
+                Err(std::io::Error::from_raw_os_error(self.0))
+            }
+        }
+        for code in [1, 13] {
+            let error = Value::from_reader(DeniedReader(code)).unwrap_err();
+            let mapped = qqmusic_preferences_error(error);
+            assert!(matches!(mapped, EkeyFetchError::CredentialsAccessDenied));
+            let message = mapped.to_string();
+            assert!(message.contains("完全磁盘访问权限"), "{}", message);
+            assert!(message.contains("QMC Decoder"), "{}", message);
+        }
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn invalid_preferences_do_not_request_disk_access() {
+        let error = Value::from_reader(Cursor::new(b"invalid plist")).unwrap_err();
+        assert!(matches!(qqmusic_preferences_error(error), EkeyFetchError::ParseError(_)));
+    }
 
     #[test]
     fn test_read_utf16_le_string() {
