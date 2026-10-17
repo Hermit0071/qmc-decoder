@@ -1,126 +1,71 @@
-/* ============================================================
-   QMC Decoder — 小清新 · 纸感 · 克制
-   暖白纸面 + 单一鼠尾草绿点缀，无渐变、无霓虹、无重阴影
-   支持深色模式；双栏固定高度布局（文件列表内部滚动）
-   ============================================================ */
-
+/* QMC Decoder — mint light and ocean dark themes. */
 :root {
   color-scheme: light;
-
-  /* 纸感中性色（暖调） */
-  --bg: #f6f5f1;
+  --bg: #effaf6;
   --surface: #ffffff;
-  --surface-2: #fbfaf7;
-  --surface-3: #f1efe9;
-  --border: #e8e4dc;
-  --border-strong: #d6d0c3;
-  --ink: #34302a;
-  --ink-2: #55504a;
-  --muted: #6f6a61;
-  --faint: #8b867c;
-
-  /* 单一强调色：鼠尾草绿（加深以保证白字对比 ≥4.5） */
-  --accent: #4f8064;
-  --accent-deep: #3f6a51;
-  --accent-tint: #e7efea;
-
-  /* 状态色（降饱和，满足对比） */
-  --ok-text: #3f6f52;
-  --ok-bg: #e9f2ec;
-  --err-text: #a0504a;
-  --err-bg: #f9edea;
-  --warn-text: #8a6a28;
-  --warn-bg: #faf3e4;
-
-  --chip-bg: var(--surface-3);
-  --chip-ink: var(--muted);
-  --drop-border: #d5d0c6;
-  --scrollbar-thumb: #ddd8cd;
-  --selection: #d9e9df;
-
+  --surface-2: #e8faf3;
+  --surface-3: #d9f5e9;
+  --border: #d2e9e0;
+  --border-strong: #88cdb8;
+  --ink: #143d35;
+  --ink-2: #315c52;
+  --muted: #55796e;
+  --faint: #66867d;
+  --accent: #087e68;
+  --accent-deep: #056551;
+  --accent-tint: #d1f6e6;
+  --on-accent: #ffffff;
+  --ok-text: #13784f;
+  --ok-bg: #dbf8e7;
+  --err-text: #b23b50;
+  --err-bg: #ffe9ee;
+  --warn-text: #866015;
+  --warn-bg: #fff3ce;
+  --chip-bg: #d3f3e5;
+  --chip-ink: #27634f;
+  --drop-border: #81cfb2;
+  --scrollbar-thumb: #a6d7c6;
+  --selection: #a9ecd3;
+  --halo: #ccf6e5;
   --radius: 16px;
-  --shadow-sm: 0 1px 2px rgba(64, 58, 47, 0.06);
-  --shadow-md: 0 10px 28px rgba(64, 58, 47, 0.08);
-  --shadow-lg: 0 24px 60px rgba(64, 58, 47, 0.2);
-
+  --shadow-sm: 0 2px 6px rgba(26, 102, 78, 0.05);
+  --shadow-md: 0 10px 28px rgba(26, 102, 78, 0.08);
+  --shadow-lg: 0 24px 60px rgba(14, 62, 49, 0.2);
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI",
     "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-  /* Windows 兜底补 Georgia/Palatino，避免回落 Times New Roman */
-  --font-serif: "Iowan Old Style", "Palatino", "Palatino Linotype",
-    "Georgia", "Baskerville", "Songti SC", "Noto Serif SC", "Cambria", serif;
 }
 
-/* ============================================================
-   Deep mode — follows the OS setting
-   ============================================================ */
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-
-    --bg: #17181c;
-    --surface: #1e2024;
-    --surface-2: #24262b;
-    --surface-3: #2c2f35;
-    --border: #2b2e34;
-    --border-strong: #3b3f48;
-    --ink: #e6e5e1;
-    --ink-2: #c9c6be;
-    --muted: #9b988f;
-    --faint: #7c7971;
-
-    --accent: #79ad92;
-    --accent-deep: #8fc3a4;
-    --accent-tint: rgba(121, 173, 146, 0.16);
-
-    --ok-text: #8fc4a0;
-    --ok-bg: rgba(90, 160, 120, 0.16);
-    --err-text: #e29a93;
-    --err-bg: rgba(213, 110, 102, 0.16);
-    --warn-text: #d7b06a;
-    --warn-bg: rgba(190, 150, 70, 0.16);
-
-    --chip-bg: #2b2e34;
-    --chip-ink: #a6a298;
-    --drop-border: #3b3f48;
-    --scrollbar-thumb: #383c44;
-    --selection: rgba(121, 173, 146, 0.38);
-
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 10px 28px rgba(0, 0, 0, 0.34);
-    --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.5);
-  }
-
-  body {
-    background:
-      radial-gradient(900px 420px at 50% -140px, #202329, transparent 72%),
-      var(--bg);
-  }
-
-  /* 深色下主按钮反色：亮绿底 + 深字，白字在亮绿上对比不足 */
-  .btn.primary {
-    background: var(--accent);
-    color: #13201a;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 14px rgba(0, 0, 0, 0.35);
-  }
-  .btn.primary:not(:disabled):hover {
-    background: var(--accent-deep);
-    color: #0d1712;
-  }
-  .btn.primary.loading .spinner {
-    border-color: rgba(19, 32, 26, 0.4);
-    border-top-color: #13201a;
-  }
-
-  .logo { color: #13201a; }
-
-  .check-box svg { color: #13201a; }
-  .check input:checked + .check-box { background: var(--accent); border-color: var(--accent); }
-
-  .github { background: var(--surface); }
-  .btn.secondary { background: var(--surface); }
-  .file:hover { box-shadow: var(--shadow-sm); }
-
-  .modal-backdrop { background: rgba(0, 0, 0, 0.52); }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #101f28;
+  --surface: #182e37;
+  --surface-2: #1d3b42;
+  --surface-3: #28464d;
+  --border: #2f4e56;
+  --border-strong: #4d8b88;
+  --ink: #e4faf4;
+  --ink-2: #c1e4d9;
+  --muted: #a1c5bc;
+  --faint: #8aafa7;
+  --accent: #5ce1b5;
+  --accent-deep: #8cebc9;
+  --accent-tint: #234b46;
+  --on-accent: #10382e;
+  --ok-text: #83e6b0;
+  --ok-bg: #21483b;
+  --err-text: #ffadbd;
+  --err-bg: #4b2c3d;
+  --warn-text: #f2d18b;
+  --warn-bg: #453e2c;
+  --chip-bg: #2b4d4b;
+  --chip-ink: #b3e5d3;
+  --drop-border: #4c8b82;
+  --scrollbar-thumb: #416961;
+  --selection: #356e60;
+  --halo: #163c40;
+  --shadow-sm: 0 2px 6px rgba(3, 17, 22, 0.16);
+  --shadow-md: 0 10px 28px rgba(3, 17, 22, 0.25);
+  --shadow-lg: 0 24px 60px rgba(3, 17, 22, 0.5);
 }
 
 /* ============================================================
@@ -134,7 +79,7 @@ body {
   margin: 0;
   font-family: var(--font-sans);
   background:
-    radial-gradient(900px 420px at 50% -140px, #fdfcfa, transparent 72%),
+    radial-gradient(900px 480px at 15% -160px, var(--halo), transparent 75%),
     var(--bg);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
@@ -169,18 +114,47 @@ body {
   display: grid;
   place-items: center;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   box-shadow: var(--shadow-sm);
 }
 .logo svg { width: 21px; height: 21px; }
 .brand-text h1 {
   margin: 0;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 21px;
   font-weight: 600;
   letter-spacing: 0.01em;
 }
 .brand-text p { margin: 3px 0 0; font-size: 12px; color: var(--muted); }
+
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
+.theme-switch {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-3);
+}
+.theme-switch button {
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font: 500 12px var(--font-sans);
+  cursor: pointer;
+}
+.theme-switch button:hover { color: var(--ink); }
+.theme-switch button[aria-pressed="true"] {
+  color: var(--on-accent);
+  background: var(--accent);
+  box-shadow: var(--shadow-sm);
+}
+.theme-switch button:focus-visible, .github:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
 
 .github {
   display: inline-flex;
@@ -341,14 +315,14 @@ main.grid {
 }
 .btn.primary {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   min-width: 150px;
-  box-shadow: 0 1px 2px rgba(63, 106, 81, 0.35), 0 4px 12px rgba(63, 106, 81, 0.22);
+  box-shadow: 0 1px 2px rgba(8, 126, 104, 0.18), 0 4px 12px rgba(8, 126, 104, 0.15);
 }
 .btn.primary:not(:disabled):hover {
   background: var(--accent-deep);
   transform: translateY(-1px);
-  box-shadow: 0 1px 2px rgba(63, 106, 81, 0.35), 0 6px 16px rgba(63, 106, 81, 0.28);
+  box-shadow: 0 1px 2px rgba(8, 126, 104, 0.18), 0 6px 16px rgba(8, 126, 104, 0.22);
 }
 .btn.primary:not(:disabled):active { transform: translateY(0); }
 .btn.secondary {
@@ -362,7 +336,7 @@ main.grid {
   color: var(--ink);
 }
 .btn.ghost { background: transparent; color: var(--muted); }
-.btn.ghost:not(:disabled):hover { color: var(--ink); background: rgba(64, 58, 47, 0.06); }
+.btn.ghost:not(:disabled):hover { color: var(--ink); background: var(--accent-tint); }
 
 .btn.primary.loading { cursor: progress; }
 
@@ -382,8 +356,8 @@ main.grid {
   display: inline-block;
   vertical-align: -2px;
   margin-right: 8px;
-  border: 2px solid rgba(255, 255, 255, 0.45);
-  border-top-color: #fff;
+  border: 2px solid color-mix(in srgb, var(--on-accent) 40%, transparent);
+  border-top-color: var(--on-accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -673,7 +647,7 @@ input:focus {
 .check-box svg {
   width: 10px;
   height: 10px;
-  color: #fff;
+  color: var(--on-accent);
   opacity: 0;
   transition: opacity 0.15s ease;
 }
@@ -808,6 +782,11 @@ input:focus {
   }
   .filelist { flex: none; max-height: 260px; }
   .options-card { align-self: auto; max-height: none; overflow: visible; }
+}
+
+@media (max-width: 600px) {
+  .topbar { flex-wrap: wrap; gap: 14px; }
+  .topbar-actions { width: 100%; justify-content: space-between; }
 }
 
 /* Very short windows: fall back to natural flow so nothing clips */
